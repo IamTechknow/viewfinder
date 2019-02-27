@@ -12,6 +12,7 @@ import {
   apiKey,
   clientId,
   interviewsTitlePrefix,
+  interviewsNewMetadata,
   interviewMonthsFolderId,
   interviewMonthFolderName,
   prompts,
@@ -37,6 +38,26 @@ class App extends Component {
     staticTiRows: null,
     liveTiRows: null,
     zoomToken: '',
+  };
+
+  static getInterviewDetails = (description) => {
+    const FIRST_IDX = 5;
+    const LAST_IDX = 6;
+    const EMAIL_IDX = 7;
+    const CHAT_IDX = 3;
+
+    // Determine whether the interview is based on the newer format
+    const isNewer = description.indexOf(interviewsNewMetadata) >= 0;
+
+    if (isNewer) {
+      const soonestInterviewDetails = description.split('\n');
+      const parseResults = description.split('\n').map(el => el.split(': ')[1]);
+      return [`${parseResults[FIRST_IDX]} ${parseResults[LAST_IDX]}`,
+        parseResults[EMAIL_IDX], parseResults[CHAT_IDX]];
+    } else {
+      const soonestInterviewDetails = description.split('\n').slice(0, 3);
+      return soonestInterviewDetails.map(el => el.split(': ')[1]);
+    }
   };
 
   componentDidMount() {
@@ -155,8 +176,8 @@ class App extends Component {
         },
       });
       const { description, start: { dateTime } } = interview;
-      const soonestInterviewDetails = description.split('\n').slice(0, 3);
-      const [candidateName, candidateEmail, tlkioLink] = soonestInterviewDetails.map(el => el.split(': ')[1]);
+      const [candidateName, candidateEmail, tlkioLink] = App.getInterviewDetails(description);
+
       const startTime = moment(dateTime);
       this.setState({
         startTime,
