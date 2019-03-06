@@ -41,19 +41,16 @@ class App extends Component {
   };
 
   static getInterviewDetails = (description) => {
-    const FIRST_IDX = 5;
-    const LAST_IDX = 6;
-    const EMAIL_IDX = 7;
-    const CHAT_IDX = 3;
-
     // Determine whether the interview is based on the newer format
-    const isNewer = description.indexOf(interviewsNewMetadata) >= 0;
+    const isNewer = description.includes(interviewsNewMetadata) >= 0;
 
     if (isNewer) {
-      const soonestInterviewDetails = description.split('\n');
-      const parseResults = description.split('\n').map(el => el.split(': ')[1]);
-      return [`${parseResults[FIRST_IDX]} ${parseResults[LAST_IDX]}`,
-        parseResults[EMAIL_IDX], parseResults[CHAT_IDX]];
+      const parsedResults = description.split('\n').map(el => el.split(': ')[1]);
+	  const candidateName = `${parsedResults[5]} ${parsedResults[6]}`;
+      const candidateEmail = parsedResults[7];
+      const tlkioLink = parsedResults[3];
+
+      return [candidateName, candidateEmail, tlkioLink];
     } else {
       const soonestInterviewDetails = description.split('\n').slice(0, 3);
       return soonestInterviewDetails.map(el => el.split(': ')[1]);
