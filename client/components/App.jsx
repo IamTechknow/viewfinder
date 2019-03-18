@@ -12,7 +12,6 @@ import {
   apiKey,
   clientId,
   interviewsTitlePrefix,
-  interviewsNewMetadata,
   interviewMonthsFolderId,
   interviewMonthFolderName,
   prompts,
@@ -42,11 +41,11 @@ class App extends Component {
 
   static getInterviewDetails = (description) => {
     // Determine whether the interview is based on the newer format
-    const isNewer = description.includes(interviewsNewMetadata) >= 0;
+    const isNewer = description.includes('YCBM link ref');
 
     if (isNewer) {
       const parsedResults = description.split('\n').map(el => el.split(': ')[1]);
-	  const candidateName = `${parsedResults[5]} ${parsedResults[6]}`;
+      const candidateName = `${parsedResults[5]} ${parsedResults[6]}`;
       const candidateEmail = parsedResults[7];
       const tlkioLink = parsedResults[3];
 
